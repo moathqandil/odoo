@@ -1,9 +1,10 @@
-# python odoo-bin -r odoo2 -w 079910142 --addons-path=addons,technical-training-sandbox/ -d demo_db
+# python odoo-bin -r odoo -w 123 --addons-path=addons,technical-training-sandbox/ -d odoo
 # python odoo-bin -r odoo2 -w 079910142 --addons-path=addons,technical-training-sandbox/ -d odoo2 -u estate
+# python odoo-bin -r odoo -w 123 --addons-path=addons\,technical-training-sandbox/ -d db_odoo -u estate
 
 {
     'name': "Real Estate",
-    'version': '1.0',
+    'version': '1.1',
     'depends': ['base'],
     'author': "moath",
     'category': 'Test',
@@ -18,4 +19,5 @@
     ],
     'installable': True,
     'application': True,
+    'license': 'LGPL-3',
 }
