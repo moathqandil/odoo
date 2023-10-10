@@ -1,6 +1,6 @@
 # python odoo-bin -r odoo -w 123 --addons-path=addons,technical-training-sandbox/ -d odoo
 # python odoo-bin -r odoo2 -w 079910142 --addons-path=addons,technical-training-sandbox/ -d odoo2 -u estate
-# python odoo-bin -r odoo -w 123 --addons-path=addons\,technical-training-sandbox/ -d db_odoo -u estate
+# python odoo-bin -r odoo -w 123 --addons-path=addons\,technical-training-sandbox/ -d db_odoo -u estate --dev xml
 
 {
     'name': "Real Estate",

@@ -4,6 +4,7 @@
   <record id="estate_property_action" model="ir.actions.act_window">
     <field name="name">Properties</field>
     <field name="res_model">estate.property</field>
+    <field name="context">{'search_default_available': True}</field>
     <field name="view_mode">tree,form</field>
   </record>
 
@@ -11,7 +12,8 @@
         <field name="name">estate.property.tree</field>
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
-            <tree string="Channel">
+            <tree string="Channel" decoration-success="state=='R'" decoration-bf="state=='R'" decoration-muted="state=='S'">
+                <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="Postcode"/>
                 <field name="property_type_id"/>
@@ -20,7 +22,8 @@
                 <field name="living_area"/>
                 <field name="expected_price"/>
                 <field name="selling_price"/>
-                <field name="date_availability"/>
+                <field name="date_availability" optional="hide"/>
+                <field name="state" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -29,13 +32,18 @@
         <field name="name">estate.property.form</field>
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
-            <form string="Lost Reason">
+            <form>
+              <header>
+                  <button name="property_sold" type="object" string="Sold" states="R,N"/>
+                  <button name="property_cancel" type="object" string="Cancel" states="R,N"/>
+                  <field name="state" widget="statusbar"/>
+              </header>
                 <sheet>
                   <h1><field name="name"/></h1>
-                  <group><field name="tag_ids" widget="many2many_tags"/></group>
+                  <group><field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/></group>
                   <group>
                     <group>
-                      <field name="property_type_id"/>
+                      <field name="property_type_id" options="{'no_create': True, 'no_open': True}"/>
                       <field name="expected_price"/>
                     </group>
                     <group>
@@ -74,11 +82,11 @@
                           <p style="font-weight: bold; width:150px;">Garden:</p>
                           <nolabel><field name="garden"/></nolabel>
                         </group>
-                        <group>
+                        <group attrs="{'invisible': [('garden', '=', False)]}">
                           <p style="font-weight: bold; width:150px;">Garden Area (sqm):</p>
                           <nolabel><field name="garden_area"/></nolabel>
                         </group>
-                        <group>
+                        <group attrs="{'invisible': [('garden', '=', False)]}">
                           <p style="font-weight: bold; width:150px;">Garden Orientation:</p>
                           <nolabel><field name="garden_orientation"/></nolabel>
                         </group>
@@ -90,7 +98,7 @@
                     </page>
 
                     <page string="Offers">
-                      <field name="offer_ids"/>
+                      <field name="offer_ids" attrs="{'readonly': ['|','|',('state', '=', 'R'), ('state', '=', 'C'),('state', '=', 'S')]}"/>
                     </page>
 
 
@@ -98,11 +106,11 @@
                       <group col="1">
                         <group>
                           <p style="font-weight: bold; width:150px;">Salesman:</p>
-                          <nolabel><field name="buyer_id"/></nolabel>
+                          <nolabel><field name="salesperson_id"/></nolabel>
                         </group>
                         <group>
                           <p style="font-weight: bold; width:150px;">Buyer:</p>
-                          <nolabel><field name="salesperson_id"/></nolabel>
+                          <nolabel><field name="buyer_id"/></nolabel>
                         </group>
                       </group>
                     </page>
@@ -121,11 +129,11 @@
                 <field name="Postcode"/>
                 <field name="expected_price"/>
                 <field name="bedrooms"/>
-                <field name="living_area"/>
+                <field name="living_area"  filter_domain="['|', ('living_area', '&gt;', self),('living_area', '=', self)]"/>
                 <field name="facades"/>
                 <separator/>
                 <!-- <filter string="Available" name="available" domain="['|',('date_availability', '&lt;', current_date),(('date_availability', '=', current_date))]"/> -->
-                <filter string="Available" name="available" domain="['|',('status', '=', 'OR'),(('status', '=', 'NE'))]"/>
+                <filter string="Available" name="available" domain="['|',('state', '=', 'R'),(('state', '=', 'N'))]"/>
                 <group expand="1" string="Group By">
                   <filter string="Postcode" name="postcode" context="{'group_by':'Postcode'}"/>
                 </group>
@@ -140,6 +148,36 @@
       <field name="view_mode">tree,form</field>
     </record>
 
+    <record id="estate_property_type_tree" model="ir.ui.view">
+          <field name="name">estate.property.type.tree</field>
+          <field name="model">estate.property.type</field>
+          <field name="arch" type="xml">
+              <form>
+                <sheet>
+                  <div style="float: right;">
+                      <button style="padding: 10px;" type="action" name="%(estate.estate_property_offer_action)d" string=" " icon="fa-money">
+                        <field name="offer_count" widget="statinfo" string="Offers"/>
+                      </button>
+                  </div>
+                  <h1><field name="name"/></h1>
+                  <notebook>
+                    <page string="Properties">
+                      <field name="property_ids">
+                        <tree>
+                          <field name="name"/>
+                          <field name="expected_price"/>
+                          <field name="state"/>
+                        </tree>
+                      </field>
+                    </page>
+                  </notebook>
+                </sheet>
+              </form>
+          </field>
+      </record>
+
+
+
     <!-- Property Tags -->
     <record id="estate_property_tags_action" model="ir.actions.act_window">
       <field name="name">Property Tags</field>
@@ -147,17 +185,31 @@
       <field name="view_mode">tree,form</field>
     </record>
 
+    <record id="property_offers_tags_tree" model="ir.ui.view">
+        <field name="name">estate.property.tag.tree</field>
+        <field name="model">estate.property.tag</field>
+        <field name="arch" type="xml">
+            <tree string="Channel" editable="bottom">
+              <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
     <!-- Property Offers -->
+
+
     <record id="property_offers_view_tree" model="ir.ui.view">
           <field name="name">property.offers.tree</field>
           <field name="model">estate.property.offer</field>
           <field name="arch" type="xml">
-              <tree string="Channel">
+              <tree string="Channel" editable="bottom" decoration-danger="state=='R'" decoration-success="state=='A'">
                   <field name="price"/>
                   <field name="partner_id"/>
-                  <field name="status"/>
+                  <field name="state" invisible="1"/>
                   <field name="validity"/>
                   <field name="date_deadline"/>
+                  <button name="offer_accept" type="object" string=" " icon="fa-check" attrs="{'invisible': ['|',('state', '=', 'A'),('state', '=', 'R')]}"/>
+                  <button name="offer_refuse" type="object" string=" " icon="fa-times" attrs="{'invisible': ['|',('state', '=', 'A'),('state', '=', 'R')]}"/>
               </tree>
           </field>
       </record>
@@ -171,7 +223,7 @@
                     <group>
                       <field name="price"/>
                       <field name="partner_id"/>
-                      <field name="status"/>
+                      <field name="state"/>
                       <field name="validity"/>
                       <field name="date_deadline"/>
                     </group>
@@ -179,5 +231,13 @@
               </form>
           </field>
       </record>
+
+      <record id="estate_property_offer_action" model="ir.actions.act_window">
+        <field name="name">Property Tags</field>
+        <field name="res_model">estate.property.offer</field>
+        <field name="domain">[('property_type_id', '=', active_id)]</field>
+        <field name="view_mode">tree,form</field>
+      </record>
+
 
 </odoo>
