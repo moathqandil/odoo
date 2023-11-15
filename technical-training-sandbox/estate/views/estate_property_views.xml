@@ -17,7 +17,7 @@
                 <field name="name"/>
                 <field name="Postcode"/>
                 <field name="property_type_id"/>
-                <field name="tag_ids"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                 <field name="bedrooms"/>
                 <field name="living_area"/>
                 <field name="expected_price"/>
@@ -82,11 +82,11 @@
                           <p style="font-weight: bold; width:150px;">Garden:</p>
                           <nolabel><field name="garden"/></nolabel>
                         </group>
-                        <group attrs="{'invisible': [('garden', '=', False)]}">
+                        <group invisible = "not garden">
                           <p style="font-weight: bold; width:150px;">Garden Area (sqm):</p>
                           <nolabel><field name="garden_area"/></nolabel>
                         </group>
-                        <group attrs="{'invisible': [('garden', '=', False)]}">
+                        <group invisible="not garden">
                           <p style="font-weight: bold; width:150px;">Garden Orientation:</p>
                           <nolabel><field name="garden_orientation"/></nolabel>
                         </group>
@@ -98,7 +98,7 @@
                     </page>
 
                     <page string="Offers">
-                      <field name="offer_ids" attrs="{'readonly': ['|','|',('state', '=', 'R'), ('state', '=', 'C'),('state', '=', 'S')]}"/>
+                      <field name="offer_ids" readonly = "['|','|',('state', '=', 'A'), ('state', '=', 'C'),('state', '=', 'S')]"/>
                     </page>
 
 
@@ -208,8 +208,8 @@
                   <field name="state" invisible="1"/>
                   <field name="validity"/>
                   <field name="date_deadline"/>
-                  <button name="offer_accept" type="object" string=" " icon="fa-check" attrs="{'invisible': ['|',('state', '=', 'A'),('state', '=', 'R')]}"/>
-                  <button name="offer_refuse" type="object" string=" " icon="fa-times" attrs="{'invisible': ['|',('state', '=', 'A'),('state', '=', 'R')]}"/>
+                  <button name="offer_accept" type="object" string=" " icon="fa-check" invisible = "['|',('state', '=', 'A'),('state', '=', 'R')]"/>
+                  <button name="offer_refuse" type="object" string=" " icon="fa-times" invisible = "['|',('state', '=', 'A'),('state', '=', 'R')]"/>
               </tree>
           </field>
       </record>
@@ -237,6 +237,21 @@
         <field name="res_model">estate.property.offer</field>
         <field name="domain">[('property_type_id', '=', active_id)]</field>
         <field name="view_mode">tree,form</field>
+      </record>
+
+      <!-- Users -->
+
+      <record id="view_users_form" model="ir.ui.view">
+        <field name="name">res.users.form.inherit.estate</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page name="estate_properties" string="Real Estate Properties">
+                    <field name="property_ids"/>
+                </page>
+            </notebook>
+        </field>
       </record>
 
 

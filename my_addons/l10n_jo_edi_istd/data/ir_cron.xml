@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_send_invoices_to_istd" model="ir.cron">
+        <field name="name">ISTD Integration: Send Daily Invoices</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=0, minute=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="doall" eval="False"/>
+        <field name="active" eval="False"/>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="code">model.send_daily_invoices_istd()</field>
+        <field name="state">code</field>
+    </record>
+</odoo>

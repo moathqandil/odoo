@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="res_config_settings_view_form_jo_istd">
+        <field name="name">res.config.settings.view.form.inherit.jo_istd</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@data-key='account']/div" position="after">
+                <h2 attrs="{'invisible':[('country_code', '!=', 'JO')]}">ISTD E-Invoicing Settings</h2>
+                <div class="row mt16 o_settings_container" name="div_jo_istd" attrs="{'invisible':[('country_code', '!=', 'JO')]}">
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">ISTD API Integration</span>
+                            <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+                            <div class="text-muted mt-3">
+                                Set your portal ISTD API credentials to enable ISTD E-Invoicing.
+                                <field name="country_code" invisible="1"/>
+                            </div>
+                            <div class="content-group mt-3">
+                                <div class="row">
+                                    <label for="l10n_jo_client_id" class="col-lg-4 o_light_label"/>
+                                    <field name="l10n_jo_client_id" help="The client ID of the ISTD e-invoicing portal"/>
+                                </div>
+                                <div class="row">
+                                    <label for="l10n_jo_client_secret" class="col-lg-4 o_light_label"/>
+                                    <field name="l10n_jo_client_secret" password="True" help="The secret key of the ISTD e-invoicing portal"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="l10n_jo_send_invoices_at_confirm"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="l10n_jo_send_invoices_at_confirm"/>
+                            <div class="text-muted mt-3">
+                                Once invoice is confirmed, it will be sent to ISTD portal.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
