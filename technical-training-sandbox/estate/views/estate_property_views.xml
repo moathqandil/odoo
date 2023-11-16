@@ -34,8 +34,8 @@
         <field name="arch" type="xml">
             <form>
               <header>
-                  <button name="property_sold" type="object" string="Sold" states="R,N"/>
-                  <button name="property_cancel" type="object" string="Cancel" states="R,N"/>
+                  <button name="property_sold" type="object" string="Sold" visible="state in ['R','N']"/>
+                  <button name="property_cancel" type="object" string="Cancel" visible="state in ['R','N']"/>
                   <field name="state" widget="statusbar"/>
               </header>
                 <sheet>
